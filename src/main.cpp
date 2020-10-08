@@ -5,7 +5,7 @@
 const char * ssid = "lego-robot";
 const char * password = "lego-2016";
 
-
+// Hello Philipp with two pp's 
 
 AsyncUDP udp;
 
