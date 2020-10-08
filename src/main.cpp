@@ -2,10 +2,9 @@
 #include "WiFi.h"
 #include "AsyncUDP.h"
 
-const char * ssid = "A Monkey's Phone";
-const char * password = "Lucked6334";
-
-// Hello Philipp with two pp's 
+// Create a hotspot on your phone and connect to it via your esp32. Remember to connect with your computer too!
+const char * ssid = "A Monkey's Phone"; // Name of the network
+const char * password = "Lucked6334";   // Password of the network
 
 AsyncUDP udp;
 
