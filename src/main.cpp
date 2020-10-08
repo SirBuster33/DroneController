@@ -7,10 +7,77 @@ const char * ssid = "A Monkey's Phone"; // Name of the network
 const char * password = "Lucked6334";   // Password of the network
 
 AsyncUDP udp;
+const int ControllerXPin = 15;
+const int ControllerYPin = 2;
+const int ButtonPin = 4;
 
-void setup()
-{
+
+int checkDeadZone(int ControllerXValue, int ControllerYValue){
+  
+  int UpperRange = 40;
+  int LowerRange = -40;
+  boolean xIsHigh (ControllerXValue > UpperRange);
+  boolean xIsLow (ControllerXValue < LowerRange);
+  boolean yIsHigh (ControllerYValue > UpperRange);
+  boolean yIsLow (ControllerYValue < LowerRange);
+
+  
+  if (xIsHigh) {
+    ControllerXValue = map(ControllerXValue, UpperRange, 100, 0, 100);
+  }
+  else if (xIsLow) {
+    ControllerXValue = map(ControllerXValue, LowerRange, -100, 0, -100);
+  }
+  else {
+    ControllerXValue = 0;
+  }
+
+  if (yIsHigh) {
+      ControllerYValue = map(ControllerYValue, UpperRange, 100, 0, 100);    
+  }
+  else if (yIsLow) {
+          ControllerYValue = map(ControllerYValue, LowerRange, -100, 0, -100);
+  }
+  else {
+    ControllerYValue = 0;
+  }
+}
+
+void printButtonState(int ControllerXValue, int ControllerYValue, int ButtonPressed){
+  Serial.print("The X-Value is: ");
+  Serial.println(ControllerXValue);
+  Serial.print("The Y-Value is: ");
+  Serial.println(ControllerYValue);
+
+  Serial.print("Button is: ");
+  Serial.println(ButtonPressed);
+
+  if (ButtonPressed == 0){
+    Serial.println("BANG! You hit the button!");
+  }
+  else{
+    Serial.println("Button is not pressed.");
+  }
+}
+
+void printSpace(){
+  Serial.println("");
+  Serial.println("");
+  Serial.println("Taking new measurement...");
+  Serial.println("");
+}
+
+void setup(){
+
+    // Controller Setup
+    pinMode (ControllerXPin, INPUT);
+    pinMode (ControllerYPin, INPUT);
+    pinMode (ButtonPin, INPUT_PULLUP);
+
+
     Serial.begin(9600);
+
+    // Wifi setup
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
     if (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -61,6 +128,17 @@ void setup()
 void loop()
 {   
     delay(5000);
+    
+  /*int ControllerXValue = map(analogRead(ControllerXPin), 0, 4095, -100, 100);
+  int ControllerYValue = map(analogRead(ControllerYPin), 0, 4095, -100, 100);
+  int ButtonPressed = digitalRead(ButtonPin);
+  
+  checkDeadZone(ControllerXValue, ControllerYValue);
+
+  printButtonState(ControllerXValue, ControllerYValue, ButtonPressed);
+
+  printSpace();  
+  delay(2000);*/
 
     // Send broadcast on port 4000
     // udp.broadcastTo("Anyone here?", 4000);
