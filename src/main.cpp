@@ -2,8 +2,8 @@
 #include "WiFi.h"
 #include "AsyncUDP.h"
 
-const char * ssid = "lego-robot";
-const char * password = "lego-2016";
+const char * ssid = "A Monkey's Phone";
+const char * password = "Lucked6334";
 
 // Hello Philipp with two pp's 
 
@@ -52,15 +52,24 @@ void setup()
         
     }
 
+    // sendMessage method using the last two digits of the IP and a port to send a message.
+    // Remember to change the UDP Port in your Packet Sender application to receive the messages
+    void sendMessage(String msg, int thirdIP, int fourthIP, int port){
+    udp.writeTo((const uint8_t *)msg.c_str(), msg.length(),IPAddress(192, 168, thirdIP, fourthIP), port);
+}
+
 
 void loop()
 {   
     delay(5000);
 
-    //Send broadcast on port 4000
+    // Send broadcast on port 4000
     // udp.broadcastTo("Anyone here?", 4000);
 
+
+    sendMessage("Hi Philipp, can you read this?", 43, 81, 333);
     //Serial.println("waiting for udp message...");
-    udp.writeTo((const uint8_t*)"Hi Hans, can you read this?", 26, IPAddress(192,168,1,27), 54321);
+    // udp.writeTo((const uint8_t*)"Hi Philipp, can you read this?", 31, IPAddress(192,168,43,81), 54321); // Message, char count, IP, port
+    // udp.writeTo((const uint8_t*)"Hi Hans, can you read this?", 27, IPAddress(192,168,43,249), 54321);
     // udp.writeTo((const uint8_t*)"Hi, you are still broadcasting. Could you comment it out?", 57, IPAddress(192,168,1,38), 54321);
 }
