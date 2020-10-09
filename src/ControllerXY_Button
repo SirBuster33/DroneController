@@ -1,4 +1,7 @@
 #include <Arduino.h>
+#include <tuple>  // Allows to easily return multiple values
+                  // Source: https://stackoverflow.com/questions/321068/returning-multiple-values-from-a-c-function
+
 // #include <LiquidCrystal_I2C.h>
 
 
@@ -10,24 +13,11 @@ void setup() {
   pinMode (ControllerXPin, INPUT);
   pinMode (ControllerYPin, INPUT);
   pinMode (ButtonPin, INPUT_PULLUP);
+
   Serial.begin(9600);
 }
-void loop() {
 
-  int ControllerXValue = map(analogRead(ControllerXPin), 0, 4095, -100, 100);
-  int ControllerYValue = map(analogRead(ControllerYPin), 0, 4095, -100, 100);
-  int ButtonPressed = digitalRead(ButtonPin);
-  
-  checkDeadZone(ControllerXValue, ControllerYValue);
-
-  printButtonState(ControllerXValue, ControllerYValue, ButtonPressed);
-
-  printSpace();  
-  delay(2000);
-
-}
-
-int checkDeadZone(int ControllerXValue, int ControllerYValue){
+std::tuple<int, int> checkDeadZone(int ControllerXValue, int ControllerYValue){
   
   int UpperRange = 40;
   int LowerRange = -40;
@@ -56,6 +46,8 @@ int checkDeadZone(int ControllerXValue, int ControllerYValue){
   else {
     ControllerYValue = 0;
   }
+  
+  return std::make_tuple(ControllerXValue, ControllerYValue);
 }
 
 void printButtonState(int ControllerXValue, int ControllerYValue, int ButtonPressed){
@@ -81,3 +73,21 @@ void printSpace(){
   Serial.println("Taking new measurement...");
   Serial.println("");
 }
+
+// Loop must be at the bottom for the code to compile without errors.
+void loop() {
+
+  int ControllerXValue = map(analogRead(ControllerXPin), 0, 4095, -100, 100);
+  int ControllerYValue = map(analogRead(ControllerYPin), 0, 4095, -100, 100);
+  int ButtonPressed = digitalRead(ButtonPin);
+  
+  checkDeadZone(ControllerXValue, ControllerYValue);
+
+  printButtonState(ControllerXValue, ControllerYValue, ButtonPressed);
+
+  printSpace();  
+  delay(2000);
+
+}
+
+

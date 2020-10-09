@@ -8,7 +8,8 @@ const char * password = "Lucked6334";   // Password of the network
 
 AsyncUDP udp;
 
-const int potentiometerPin = 15;
+// Note for what pins to use: The ADC2 analog pins get fucked by the wifi configuration. Use Pin 32-36 and 39 instead.
+const int potentiometerPin = 36; 
 
 /*const int ControllerXPin = 15;
 const int ControllerYPin = 2;
@@ -153,9 +154,9 @@ void loop()
     // udp.broadcastTo("Anyone here?", 4000);
 
     if (voltage >= (3.3/2)){
-    sendMessage("Voltage is above 50%", 43, 81, 333);
+    sendMessage("V is high.", 43, 81, 333);
     } else{
-    sendMessage("Voltage is below 50%", 43, 81, 333);
+    sendMessage("V is low.", 43, 81, 333);
     }
 
     // sendMessage("Hi Philipp, can you read this?", 43, 81, 333);
