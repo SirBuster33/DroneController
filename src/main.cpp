@@ -8,7 +8,9 @@ const char * password = "Lucked6334";   // Password of the network
 
 AsyncUDP udp;
 
-const int ControllerXPin = 15;
+const int potentiometerPin = 15;
+
+/*const int ControllerXPin = 15;
 const int ControllerYPin = 2;
 const int ButtonPin = 4;
 
@@ -66,15 +68,16 @@ void printSpace(){
   Serial.println("");
   Serial.println("Taking new measurement...");
   Serial.println("");
-}
+}*/
 
 void setup(){
 
     // Controller Setup
-    pinMode (ControllerXPin, INPUT);
+    /*pinMode (ControllerXPin, INPUT);
     pinMode (ControllerYPin, INPUT);
-    pinMode (ButtonPin, INPUT_PULLUP);
+    pinMode (ButtonPin, INPUT_PULLUP);*/
 
+    pinMode (potentiometerPin, INPUT);
 
     Serial.begin(9600);
 
@@ -129,7 +132,12 @@ void setup(){
 void loop()
 {   
     delay(5000);
-    
+
+    int potentiometerValue = analogRead(potentiometerPin);
+    double voltage = potentiometerValue / 4095.0 * 3.3;
+    Serial.print("The voltage is set at: ");
+    Serial.println(voltage);
+
   /*int ControllerXValue = map(analogRead(ControllerXPin), 0, 4095, -100, 100);
   int ControllerYValue = map(analogRead(ControllerYPin), 0, 4095, -100, 100);
   int ButtonPressed = digitalRead(ButtonPin);
@@ -144,8 +152,13 @@ void loop()
     // Send broadcast on port 4000
     // udp.broadcastTo("Anyone here?", 4000);
 
+    if (voltage >= (3.3/2)){
+    sendMessage("Voltage is above 50%", 43, 81, 333);
+    } else{
+    sendMessage("Voltage is below 50%", 43, 81, 333);
+    }
 
-    sendMessage("Hi Philipp, can you read this?", 43, 81, 333);
+    // sendMessage("Hi Philipp, can you read this?", 43, 81, 333);
     //Serial.println("waiting for udp message...");
     // udp.writeTo((const uint8_t*)"Hi Philipp, can you read this?", 31, IPAddress(192,168,43,81), 54321); // Message, char count, IP, port
     // udp.writeTo((const uint8_t*)"Hi Hans, can you read this?", 27, IPAddress(192,168,43,249), 54321);

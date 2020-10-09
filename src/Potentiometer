@@ -11,7 +11,7 @@
     int potentiometerValue = analogRead(potentiometerPin);
     double voltage = potentiometerValue / 4095.0 * 3.3;
     Serial.print("The voltage is set at: ");
-    Serial.println(potentiometerValue);
+    Serial.println(voltage;
     delay(1000);
 
   }
