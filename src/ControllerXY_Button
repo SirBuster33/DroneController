@@ -4,10 +4,11 @@
 
 // #include <LiquidCrystal_I2C.h>
 
+Class ControllerXY_Button{
 
-const int ControllerXPin = 15;
-const int ControllerYPin = 2;
-const int ButtonPin = 4;
+const int ControllerXPin = 33;
+const int ControllerYPin = 32;
+const int ButtonPin = 35;
 
 void setup() {
   pinMode (ControllerXPin, INPUT);

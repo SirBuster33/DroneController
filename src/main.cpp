@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include "WiFi.h"
 #include "AsyncUDP.h"
+#include <tuple>  // Allows to easily return multiple values, used in chechDeadZone.
+                  // Source: https://stackoverflow.com/questions/321068/returning-multiple-values-from-a-c-function
 
 // Create a hotspot on your phone and connect to it via your esp32. Remember to connect with your computer too!
 const char * ssid = "A Monkey's Phone"; // Name of the network
@@ -11,72 +13,16 @@ AsyncUDP udp;
 // Note for what pins to use: The ADC2 analog pins get fucked by the wifi configuration. Use Pin 32-36 and 39 instead.
 const int potentiometerPin = 36; 
 
-/*const int ControllerXPin = 15;
-const int ControllerYPin = 2;
-const int ButtonPin = 4;
-
-
-int checkDeadZone(int ControllerXValue, int ControllerYValue){
-  
-  int UpperRange = 40;
-  int LowerRange = -40;
-  boolean xIsHigh (ControllerXValue > UpperRange);
-  boolean xIsLow (ControllerXValue < LowerRange);
-  boolean yIsHigh (ControllerYValue > UpperRange);
-  boolean yIsLow (ControllerYValue < LowerRange);
-
-  
-  if (xIsHigh) {
-    ControllerXValue = map(ControllerXValue, UpperRange, 100, 0, 100);
-  }
-  else if (xIsLow) {
-    ControllerXValue = map(ControllerXValue, LowerRange, -100, 0, -100);
-  }
-  else {
-    ControllerXValue = 0;
-  }
-
-  if (yIsHigh) {
-      ControllerYValue = map(ControllerYValue, UpperRange, 100, 0, 100);    
-  }
-  else if (yIsLow) {
-          ControllerYValue = map(ControllerYValue, LowerRange, -100, 0, -100);
-  }
-  else {
-    ControllerYValue = 0;
-  }
-}
-
-void printButtonState(int ControllerXValue, int ControllerYValue, int ButtonPressed){
-  Serial.print("The X-Value is: ");
-  Serial.println(ControllerXValue);
-  Serial.print("The Y-Value is: ");
-  Serial.println(ControllerYValue);
-
-  Serial.print("Button is: ");
-  Serial.println(ButtonPressed);
-
-  if (ButtonPressed == 0){
-    Serial.println("BANG! You hit the button!");
-  }
-  else{
-    Serial.println("Button is not pressed.");
-  }
-}
-
-void printSpace(){
-  Serial.println("");
-  Serial.println("");
-  Serial.println("Taking new measurement...");
-  Serial.println("");
-}*/
+const int ControllerXPin = 33;
+const int ControllerYPin = 32;
+const int ButtonPin = 35;
 
 void setup(){
 
     // Controller Setup
-    /*pinMode (ControllerXPin, INPUT);
+    pinMode (ControllerXPin, INPUT);
     pinMode (ControllerYPin, INPUT);
-    pinMode (ButtonPin, INPUT_PULLUP);*/
+    pinMode (ButtonPin, INPUT_PULLUP);
 
     pinMode (potentiometerPin, INPUT);
 
@@ -121,14 +67,74 @@ void setup(){
         //udp.print("Hello Server!");
         //udp.
         
-    }
+}
 
-    // sendMessage method using the last two digits of the IP and a port to send a message.
-    // Remember to change the UDP Port in your Packet Sender application to receive the messages
-    void sendMessage(String msg, int thirdIP, int fourthIP, int port){
+// sendMessage method using the last two digits of the IP and a port to send a message.
+// Remember to change the UDP Port in your Packet Sender application to receive the messages
+void sendMessage(String msg, int thirdIP, int fourthIP, int port){
     udp.writeTo((const uint8_t *)msg.c_str(), msg.length(),IPAddress(192, 168, thirdIP, fourthIP), port);
 }
 
+std::tuple<int, int> checkDeadZone(int ControllerXValue, int ControllerYValue){
+  
+  int UpperRange = 40;
+  int LowerRange = -40;
+  boolean xIsHigh (ControllerXValue > UpperRange);
+  boolean xIsLow (ControllerXValue < LowerRange);
+  boolean yIsHigh (ControllerYValue > UpperRange);
+  boolean yIsLow (ControllerYValue < LowerRange);
+
+  
+  if (xIsHigh) {
+    ControllerXValue = map(ControllerXValue, UpperRange, 100, 0, 100);
+  }
+  else if (xIsLow) {
+    ControllerXValue = map(ControllerXValue, LowerRange, -100, 0, -100);
+  }
+  else {
+    ControllerXValue = 0;
+  }
+
+  if (yIsHigh) {
+      ControllerYValue = map(ControllerYValue, UpperRange, 100, 0, 100);    
+  }
+  else if (yIsLow) {
+          ControllerYValue = map(ControllerYValue, LowerRange, -100, 0, -100);
+  }
+  else {
+    ControllerYValue = 0;
+  }
+
+  return std::make_tuple(ControllerXValue, ControllerYValue);
+}
+
+void printButtonState(int ControllerXValue, int ControllerYValue, int ButtonPressed){
+  Serial.print("The X-Value is: ");
+  Serial.println(ControllerXValue);
+    sendMessage("X is: " + ControllerXValue, 43, 81, 333);
+  Serial.print("The Y-Value is: ");
+  Serial.println(ControllerYValue);
+    sendMessage("Y is: " + ControllerYValue, 43, 81, 333);
+
+  Serial.print("Button is: ");
+  Serial.println(ButtonPressed);
+
+  if (ButtonPressed == 0){
+    Serial.println("BANG! You hit the button!");
+    sendMessage("BANG! You hit the button!", 43, 81, 333);
+  }
+  else{
+    Serial.println("Button is not pressed.");
+    sendMessage("Button is not pressed.", 43, 81, 333);
+  }
+}
+
+void printSpace(){
+  Serial.println("");
+  Serial.println("");
+  Serial.println("Taking new measurement...");
+  Serial.println("");
+}
 
 void loop()
 {   
@@ -139,7 +145,7 @@ void loop()
     Serial.print("The voltage is set at: ");
     Serial.println(voltage);
 
-  /*int ControllerXValue = map(analogRead(ControllerXPin), 0, 4095, -100, 100);
+  int ControllerXValue = map(analogRead(ControllerXPin), 0, 4095, -100, 100);
   int ControllerYValue = map(analogRead(ControllerYPin), 0, 4095, -100, 100);
   int ButtonPressed = digitalRead(ButtonPin);
   
@@ -148,7 +154,7 @@ void loop()
   printButtonState(ControllerXValue, ControllerYValue, ButtonPressed);
 
   printSpace();  
-  delay(2000);*/
+  delay(2000);
 
     // Send broadcast on port 4000
     // udp.broadcastTo("Anyone here?", 4000);
