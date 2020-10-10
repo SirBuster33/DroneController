@@ -80,8 +80,7 @@ void sendMessage(String msg, int thirdIP, int fourthIP, int port){
 }
 
 // Loop must be at the bottom for the code to compile without errors.
-void loop()
-{   
+void loop(){   
     // Wait some time before running the loop as to not flood the terminal with information.
     delay(5000);
 
