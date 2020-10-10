@@ -3,13 +3,29 @@
                   // Source: https://stackoverflow.com/questions/321068/returning-multiple-values-from-a-c-function
 
 class Potentiometer{
-  public:
+  private:
     int potentiometerPin;
+    int potentiometerValue;
+    int voltage;
 
   // Constructor
   Potentiometer (int potentiometerPin){
     this->potentiometerPin = potentiometerPin;
     pinMode (potentiometerPin, INPUT);
+    this->potentiometerValue = 0;
+    this->voltage = 0;
+  }
+
+  // Getters
+  int getPotentiometerPin(){
+    return this->potentiometerPin;
+  }
+  int getPotentiometerValue(){
+    return this->potentiometerValue;
+  }
+
+  int getVoltage(){
+    return this->voltage;
   }
 
   /*void setup() {
@@ -18,18 +34,19 @@ class Potentiometer{
   }*/
 
   // Reads the input on the breadboard.
-  std::tuple<int, int> updateState(){
-    int potentiometerValue = analogRead(potentiometerPin);
-    double voltage = potentiometerValue / 4095.0 * 3.3;
-    return std::make_tuple(potentiometerValue, voltage);
+  void updateState(){
+    this->potentiometerValue = analogRead(potentiometerPin);
+    this->voltage = potentiometerValue / 4095.0 * 3.3;
   }
 
-  String printPotentiometerState(int potentiometerValue, int voltage){
+  // Prints out the current state of the potentiometer.
+  String printPotentiometerState(){
+    this->updateState(); // Ensures that the current state is printed.
     String s;
     s += "The potentiometer is set at: ";
-    s += potentiometerValue;
+    s += this->potentiometerValue;
     s += "\nThe voltage is set at: ";
-    s += voltage;
+    s += this->voltage;
     return s;
   }
 
