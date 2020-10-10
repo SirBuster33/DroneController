@@ -1,8 +1,9 @@
 #include <Arduino.h>
 #include "WiFi.h"
 #include "AsyncUDP.h"
-#include <tuple>  // Allows to easily return multiple values, used in chechDeadZone.
+// #include <tuple>  // Allows to easily return multiple values
                   // Source: https://stackoverflow.com/questions/321068/returning-multiple-values-from-a-c-function
+                  // Was needed earlier but with generalisation (through getters) of the code it's no longer necessary.
 
 #include <Joystick.h> // Import Joystick class
 #include <Potentiometer.h> // Import Potentiometer class
@@ -20,7 +21,9 @@ const int Joystick1XPin = 33; // Analog Pin.
 const int Joystick1YPin = 32; // Analog Pin.
 const int Joystick1ButtonPin = 21;  // Digital Pin.
 
-const int potentiometerPin = 36; // Analog Pin. 
+const int potentiometerPin = 36; // Analog Pin.
+
+const int voltageMax = 3.3; // Maximum voltage on the breadboard.
 
 // Create a joystick object
 Joystick joystick1(Joystick1XPin, Joystick1YPin, Joystick1ButtonPin);
@@ -80,36 +83,29 @@ void sendMessage(String msg, int thirdIP, int fourthIP, int port){
 }
 
 // Loop must be at the bottom for the code to compile without errors.
-void loop(){   
-    // Wait some time before running the loop as to not flood the terminal with information.
-    delay(5000);
+void loop(){
 
+    // Always updateState for all objects at the start of the loop!
+    joystick1.updateState();
     potentiometer.updateState();
     
+    joystick1.printJoystickState();
     potentiometer.printPotentiometerState();
 
-    if (potentiometer.getVoltage() >= (3.3/2)){
-    sendMessage("V is high.", 43, 81, 333);
+    if (potentiometer.getVoltage() >= (voltageMax/2)){
+    sendMessage("V is >50%.", 43, 81, 333);
     } else{
-    sendMessage("V is low.", 43, 81, 333);
+    sendMessage("V is <50%.", 43, 81, 333);
     }
-
-  /*int JoystickXValue = map(analogRead(JoystickXPin), 0, 4095, -100, 100);
-  int JoystickYValue = map(analogRead(JoystickYPin), 0, 4095, -100, 100);
-  int ButtonPressed = digitalRead(ButtonPin);
-  
-  checkDeadZone(JoystickXValue, JoystickYValue);
-
-  printButtonState(JoystickXValue, JoystickYValue, ButtonPressed);
-
-  printSpace(); */ 
-  delay(2000);
 
     // Send broadcast on port 4000
     // udp.broadcastTo("Anyone here?", 4000);
 
     // sendMessage("Hi Philipp, can you read this?", 43, 81, 333);
-    //Serial.println("waiting for udp message...");
     // udp.writeTo((const uint8_t*)"Hi Philipp, can you read this?", 31, IPAddress(192,168,43,81), 54321); // Message, char count, IP, port
     // udp.writeTo((const uint8_t*)"Hi Hans, can you read this?", 27, IPAddress(192,168,43,249), 54321);
+
+    
+    // Wait some time before running the loop again as to not flood the terminal with information.
+    delay(5000);
 }
