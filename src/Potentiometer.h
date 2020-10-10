@@ -7,47 +7,45 @@ class Potentiometer{
     int potentiometerPin;
     int potentiometerValue;
     int voltage;
+  
+    // Add public: to make the methods below accessible, otherwise, the previous private: would make everything private.
+  public: 
+    // Constructor
+    Potentiometer (int potentiometerPin){
+      this->potentiometerPin = potentiometerPin;
+      pinMode (potentiometerPin, INPUT);
+      this->potentiometerValue = 0;
+      this->voltage = 0;
+    }
 
-  // Constructor
-  Potentiometer (int potentiometerPin){
-    this->potentiometerPin = potentiometerPin;
-    pinMode (potentiometerPin, INPUT);
-    this->potentiometerValue = 0;
-    this->voltage = 0;
-  }
+    // Getters
+    int getPotentiometerPin(){
+      return this->potentiometerPin;
+    }
+    int getPotentiometerValue(){
+      return this->potentiometerValue;
+    }
 
-  // Getters
-  int getPotentiometerPin(){
-    return this->potentiometerPin;
-  }
-  int getPotentiometerValue(){
-    return this->potentiometerValue;
-  }
+    int getVoltage(){
+      return this->voltage;
+    }
 
-  int getVoltage(){
-    return this->voltage;
-  }
 
-  /*void setup() {
-  pinMode (potentiometerPin, INPUT);
-  Serial.begin(9600);
-  }*/
+    // Reads the input on the breadboard.
+    void updateState(){
+      this->potentiometerValue = analogRead(this->potentiometerPin);
+      this->voltage = potentiometerValue / 4095.0 * 3.3;
+    }
 
-  // Reads the input on the breadboard.
-  void updateState(){
-    this->potentiometerValue = analogRead(potentiometerPin);
-    this->voltage = potentiometerValue / 4095.0 * 3.3;
-  }
-
-  // Prints out the current state of the potentiometer.
-  String printPotentiometerState(){
-    this->updateState(); // Ensures that the current state is printed.
-    String s;
-    s += "The potentiometer is set at: ";
-    s += this->potentiometerValue;
-    s += "\nThe voltage is set at: ";
-    s += this->voltage;
-    return s;
-  }
+    // Prints out the current state of the potentiometer.
+    String printPotentiometerState(){
+      // this->updateState(); // Ensures that the current state is printed.
+      String s;
+      s += "The potentiometer is set at: ";
+      s += this->potentiometerValue;
+      s += "\nThe voltage is set at: ";
+      s += this->voltage;
+      return s;
+    }
 
 };

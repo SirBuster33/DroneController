@@ -79,13 +79,16 @@ void sendMessage(String msg, int thirdIP, int fourthIP, int port){
     udp.writeTo((const uint8_t *)msg.c_str(), msg.length(),IPAddress(192, 168, thirdIP, fourthIP), port);
 }
 
+// Loop must be at the bottom for the code to compile without errors.
 void loop()
 {   
     // Wait some time before running the loop as to not flood the terminal with information.
     delay(5000);
 
-    potentiometer.printPotentiometerState();
+    potentiometer.updateState();
     
+    potentiometer.printPotentiometerState();
+
     if (potentiometer.getVoltage() >= (3.3/2)){
     sendMessage("V is high.", 43, 81, 333);
     } else{
@@ -110,5 +113,4 @@ void loop()
     //Serial.println("waiting for udp message...");
     // udp.writeTo((const uint8_t*)"Hi Philipp, can you read this?", 31, IPAddress(192,168,43,81), 54321); // Message, char count, IP, port
     // udp.writeTo((const uint8_t*)"Hi Hans, can you read this?", 27, IPAddress(192,168,43,249), 54321);
-    // udp.writeTo((const uint8_t*)"Hi, you are still broadcasting. Could you comment it out?", 57, IPAddress(192,168,1,38), 54321);
 }
