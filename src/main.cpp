@@ -20,13 +20,17 @@ AsyncUDP udp;
 const int Joystick1XPin = 33; // Analog Pin.
 const int Joystick1YPin = 32; // Analog Pin.
 const int Joystick1ButtonPin = 21;  // Digital Pin.
+const int Joystick2XPin = 35; // Analog Pin.
+const int Joystick2YPin = 34; // Analog Pin.
+const int Joystick2ButtonPin = 19;  // Digital Pin.
 
 const int potentiometerPin = 36; // Analog Pin.
 
 const int voltageMax = 3.3; // Maximum voltage on the breadboard.
 
 // Create a joystick object
-Joystick joystick1(Joystick1XPin, Joystick1YPin, Joystick1ButtonPin);
+Joystick joystick1("Joystick1", Joystick1XPin, Joystick1YPin, Joystick1ButtonPin);
+Joystick joystick2("Joystick2", Joystick2XPin, Joystick2YPin, Joystick2ButtonPin);
 
 // Create a potentiometer object
 Potentiometer potentiometer(potentiometerPin);
@@ -87,16 +91,18 @@ void loop(){
 
     // Always updateState for all objects at the start of the loop!
     joystick1.updateState();
+    joystick2.updateState();
     potentiometer.updateState();
     
-    joystick1.printJoystickState();
-    potentiometer.printPotentiometerState();
+    Serial.println(joystick1.printJoystickState());
+    Serial.println(joystick2.printJoystickState());    
+    Serial.println(potentiometer.printPotentiometerState());
 
-    if (potentiometer.getVoltage() >= (voltageMax/2)){
+    /*if (potentiometer.getVoltage() >= (voltageMax/2)){
     sendMessage("V is >50%.", 43, 81, 333);
     } else{
     sendMessage("V is <50%.", 43, 81, 333);
-    }
+    }*/
 
     // Send broadcast on port 4000
     // udp.broadcastTo("Anyone here?", 4000);

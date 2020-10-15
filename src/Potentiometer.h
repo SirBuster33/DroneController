@@ -6,7 +6,7 @@ class Potentiometer{
   private:
     int potentiometerPin;
     int potentiometerValue;
-    int voltage;
+    double voltage;
   
     // Add public: to make the methods below accessible, otherwise, the previous private: would make everything private.
   public: 

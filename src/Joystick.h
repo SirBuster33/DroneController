@@ -8,6 +8,7 @@ class Joystick{
     int JoystickXPin;
     int JoystickYPin;
     int JoystickButtonPin;
+    String JoystickName;
 
     int JoystickXValue;
     int JoystickYValue;
@@ -16,8 +17,9 @@ class Joystick{
     // Add public: to make the methods below accessible, otherwise, the previous private: would make everything private.
   public:
     // Constructor for Joystick
-    Joystick (int JoystickXPin, int JoystickYPin, int JoystickButtonPin)
+    Joystick (String JoystickName, int JoystickXPin, int JoystickYPin, int JoystickButtonPin)
     {
+      this->JoystickName = JoystickName;
       this->JoystickXPin = JoystickXPin;
       pinMode (this->JoystickXPin, INPUT);
       this->JoystickYPin = JoystickYPin;
@@ -31,6 +33,9 @@ class Joystick{
     }
 
     // Getters
+    String getJoystickName(){
+      return this->JoystickName;
+    }
     int getJoystickXPin(){
       return this->JoystickXPin;
     }
@@ -98,6 +103,8 @@ class Joystick{
     // Returns the current state of the joystick as a String.
     String printJoystickState(){
       String s;
+      s += "Printing state for: ";
+      s += this->JoystickName;
       s += "The X value is: ";
       s += this->JoystickXValue;
       s += "\nThe Y Value is: ";
@@ -107,13 +114,13 @@ class Joystick{
       s += this->JoystickButton;
 
       // Remainder of the joystick exercise but nice to have for quick checking without thinking.
-      if (this->JoystickButton == 1){
+      if (this->JoystickButton == 0){
         s += "\nBANG! You hit the button!";
       }
       else{
         s += "\nButton is not pressed.";
       }
-  
+
       return s;
     }
 
