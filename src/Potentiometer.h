@@ -7,7 +7,8 @@ class Potentiometer{
     int potentiometerPin;
     int potentiometerValue;
     double voltage;
-  
+    const int voltageMax = 3.3; // Maximum voltage on the breadboard.
+
     // Add public: to make the methods below accessible, otherwise, the previous private: would make everything private.
   public: 
     // Constructor
@@ -29,6 +30,9 @@ class Potentiometer{
     int getVoltage(){
       return this->voltage;
     }
+    int getVoltageMax(){
+      return voltageMax;
+    }
 
 
     // Reads the input on the breadboard.
@@ -48,5 +52,6 @@ class Potentiometer{
       s += "\n";
       return s;
     }
+    
 
 };

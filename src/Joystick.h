@@ -115,13 +115,21 @@ class Joystick{
 
       // Remainder of the joystick exercise but nice to have for quick checking without thinking.
       if (this->JoystickButton == 0){
-        s += "\nBANG! You hit the button!\n";
+        s += "\nBANG! You hit the button of ";
+        s += this->JoystickName;
+        s += "!\n";
       }
       else{
-        s += "\nButton is not pressed.\n";
+        s += "\nButton of ";
+        s += this->JoystickName;
+        s += " is not pressed.\n";
       }
 
       return s;
+    }
+
+    void movePixel(){
+      ;
     }
 
     // Prints extra space so that the output is readible. May be implemented somewhere else.
