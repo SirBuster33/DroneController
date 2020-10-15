@@ -105,20 +105,20 @@ class Joystick{
       String s;
       s += "Printing state for: ";
       s += this->JoystickName;
-      s += "The X value is: ";
+      s += "\nThe X value is: ";
       s += this->JoystickXValue;
       s += "\nThe Y Value is: ";
       s += this->JoystickYValue;
 
-      s += "\n Button is: ";
+      s += "\nButton is: ";
       s += this->JoystickButton;
 
       // Remainder of the joystick exercise but nice to have for quick checking without thinking.
       if (this->JoystickButton == 0){
-        s += "\nBANG! You hit the button!";
+        s += "\nBANG! You hit the button!\n";
       }
       else{
-        s += "\nButton is not pressed.";
+        s += "\nButton is not pressed.\n";
       }
 
       return s;

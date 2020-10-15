@@ -45,6 +45,7 @@ class Potentiometer{
       s += this->potentiometerValue;
       s += "\nThe voltage is set at: ";
       s += this->voltage;
+      s += "\n";
       return s;
     }
 
