@@ -44,12 +44,36 @@ Joystick joystick2("Joystick2", Joystick2XPin, Joystick2YPin, Joystick2ButtonPin
 // Create a potentiometer object
 Potentiometer potentiometer(potentiometerPin);
 
+// Used to adjust the strength of movement before sending it as a command.
+int speedModifier = 1;
+
+// Used to build the rc command
+String commandRC = "";
+
 // sendMessage method using the last two digits of the IP and a port to send a message.
 // Remember to change the UDP Port in your Packet Sender application to receive the messages
 void sendMessage(String msg){
     udp.writeTo((const uint8_t *)msg.c_str(), msg.length(),IPAddress(192, 168, thirdIP, fourthIP), port);
 }
 
+String buildCommandRC(){
+    String commandRC = "rc ";
+    
+    return commandRC;
+}
+// Send Tello drone rc command: a = "left/right x" where (-100 <= x <= 100)
+void movePixelY(){    
+    if (joystick1.getJoystickYValue() == 100){
+      sendMessage("right " + 1);
+    }
+    else if (joystick1.getJoystickYValue() == -100){
+        sendMessage("left " + -1);
+    } else {
+        sendMessage("stop");
+    }
+}
+
+// Send Tello drone rc command: b ="forward/backward x" where (-100 <= x <= 100)
 void movePixelX(){
     if (joystick1.getJoystickXValue() == 100){
       sendMessage("moveup");
@@ -61,19 +85,13 @@ void movePixelX(){
     }
 }
 
-void movePixelY(){    
-    if (joystick1.getJoystickYValue() == 100){
-      sendMessage("moveright");
-    }
-    else if (joystick1.getJoystickYValue() == -100){
-        sendMessage("moveleft");
-    } else {
-        sendMessage("stop");
-    }
-}
-
-void pixelSpeed(){
-    sendMessage("Speed " + String(int(potentiometer.getPotentiometerValue() / 4095 * 10)));
+// Sends Tello drone command: "speed x" where x = 10-100
+int adjustSpeed(){
+    // If the potentiometer value is not cast to double, the division by 4095 will return 0.
+    double potentiometerValueDouble = (double) potentiometer.getPotentiometerValue();
+    int speedModifier = (int) potentiometerValueDouble / 4095 * 100;
+    Serial.println(speedModifier);
+    return speedModifier;
 }
 
 void setup(){    
@@ -131,12 +149,12 @@ void loop(){
     joystick1.updateState();
     // joystick2.updateState();
     potentiometer.updateState();
+
+    speedModifier = adjustSpeed();
     
+    commandRC = buildCommandRC();
     // Serial.println(joystick1.printJoystickState());
     // Serial.println(joystick2.printJoystickState());
-    
-    // sendMessage("Speed " + String(int(potentiometer.getPotentiometerValue() / 4095 * 10)));
-    Serial.println(potentiometer.getPotentiometerValue());
     // Serial.println(potentiometer.printPotentiometerState());
 
 
@@ -145,7 +163,7 @@ void loop(){
     // movePixelX();
     // movePixelY();
 
-    pixelSpeed();
+    adjustSpeed();
 
     // Send broadcast on port x
     // udp.broadcastTo("Anyone here?", x);
@@ -154,5 +172,5 @@ void loop(){
     
 
     // Wait some time before running the loop again as to not flood the terminal with information.
-    delay(1000);
+    delay(3000);
 }
