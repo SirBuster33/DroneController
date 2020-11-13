@@ -58,34 +58,74 @@ void sendMessage(String msg){
 
 String buildCommandRC(){
     String commandRC = "rc ";
-    
+    commandRC += leftRight();
+    commandRC += forwardBackward();
+    commandRC += upDown();
+    commandRC += faceDirection();
+
     return commandRC;
 }
-// Send Tello drone rc command: a = "left/right x" where (-100 <= x <= 100)
-void movePixelY(){    
+// Send Tello drone rc command: a (left/right) where (-100 <= a <= 100)
+String leftRight(){
+    String leftRight = "";  
     if (joystick1.getJoystickYValue() == 100){
-      sendMessage("right " + 1);
+        leftRight += (1) * speedModifier;
     }
     else if (joystick1.getJoystickYValue() == -100){
-        sendMessage("left " + -1);
+        leftRight += (-1) * speedModifier;
     } else {
-        sendMessage("stop");
+        leftRight += 0;
     }
+    leftRight += " ";
+    return leftRight;
 }
 
-// Send Tello drone rc command: b ="forward/backward x" where (-100 <= x <= 100)
-void movePixelX(){
+// Send Tello drone rc command: b (forward/backward) = where (-100 <= b <= 100)
+String forwardBackward(){
+    String forwardBackward = "";
     if (joystick1.getJoystickXValue() == 100){
-      sendMessage("moveup");
+        forwardBackward += 1 * speedModifier;
     }
     else if (joystick1.getJoystickXValue() == -100){
-        sendMessage("movedown");
+        forwardBackward += (-1) * speedModifier;
     } else {
-        sendMessage("stop");
+        forwardBackward += 0;
     }
+    forwardBackward += " ";
+    return forwardBackward;
 }
 
-// Sends Tello drone command: "speed x" where x = 10-100
+// Send Tello drone rc command: c (up/down) = where (-100 <= c <= 100)
+String upDown(){
+    String upDown = "";
+    if (joystick2.getJoystickYValue() == 100){
+        upDown += 1 * speedModifier;
+    }
+    else if (joystick2.getJoystickYValue() == -100){
+        upDown += (-1) * speedModifier;
+    } else {
+        upDown += 0;
+    }
+    upDown += " ";
+    return upDown;
+}
+
+// Send Tello drone rc command: d (faceDirection) = where (-100 <= d <= 100)
+String faceDirection(){
+    String faceDirection = "";
+    if (joystick2.getJoystickXValue() == 100){
+        faceDirection += 1 * speedModifier;
+    }
+    else if (joystick2.getJoystickXValue() == -100){
+        faceDirection += (-1) * speedModifier;
+    } else {
+        faceDirection += 0;
+    }
+    // faceDirection += " ";
+    return faceDirection;
+}
+
+// Sends Tello drone command: "speed x" where x = 1-100
 int adjustSpeed(){
     // If the potentiometer value is not cast to double, the division by 4095 will return 0.
     double potentiometerValueDouble = (double) potentiometer.getPotentiometerValue();
