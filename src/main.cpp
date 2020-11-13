@@ -12,6 +12,11 @@
 const char * ssid = "A Monkey's Phone"; // Name of the network
 const char * password = "Lucked6334";   // Password of the network
 
+// Change the IPs when you run the code on your computer!
+const int thirdIP = 43;
+const int fourthIP = 81;
+const int port = 6000; // Depending on what the receiver in the GUI is set to!
+
 AsyncUDP udp;
 
 // Note for what pins to use: The ADC2 analog pins do not work as intended due to the wifi configuration.
@@ -41,34 +46,34 @@ Potentiometer potentiometer(potentiometerPin);
 
 // sendMessage method using the last two digits of the IP and a port to send a message.
 // Remember to change the UDP Port in your Packet Sender application to receive the messages
-void sendMessage(String msg, int thirdIP, int fourthIP, int port){
+void sendMessage(String msg){
     udp.writeTo((const uint8_t *)msg.c_str(), msg.length(),IPAddress(192, 168, thirdIP, fourthIP), port);
 }
 
 void movePixelX(){
     if (joystick1.getJoystickXValue() == 100){
-      sendMessage("moveup", 43, 81, 7000);
+      sendMessage("moveup");
     }
     else if (joystick1.getJoystickXValue() == -100){
-        sendMessage("movedown", 43, 81, 7000);
+        sendMessage("movedown");
     } else {
-        sendMessage("stop", 43, 81, 7000);
+        sendMessage("stop");
     }
 }
 
 void movePixelY(){    
     if (joystick1.getJoystickYValue() == 100){
-      sendMessage("moveright", 43, 81, 7000);
+      sendMessage("moveright");
     }
     else if (joystick1.getJoystickYValue() == -100){
-        sendMessage("moveleft", 43, 81, 7000);
+        sendMessage("moveleft");
     } else {
-        sendMessage("stop", 43, 81, 7000);
+        sendMessage("stop");
     }
 }
 
 void pixelSpeed(){
-    sendMessage("Speed " + String(int(potentiometer.getPotentiometerValue() / 4095 * 10)), 43, 81, 7000);
+    sendMessage("Speed " + String(int(potentiometer.getPotentiometerValue() / 4095 * 10)));
 }
 
 void setup(){    
@@ -115,7 +120,7 @@ void setup(){
         //udp.
     
     // Initialize the first pixel that represents the drone.
-    sendMessage("init " + String(pixelX) + " " + String(pixelY), 43, 81, 7000);
+    sendMessage("init " + String(pixelX) + " " + String(pixelY));
         
 }
 
@@ -137,13 +142,11 @@ void loop(){
     movePixelY();
     pixelSpeed();
 
-    // Send broadcast on port 4000
-    // udp.broadcastTo("Anyone here?", 4000);
+    // Send broadcast on port x
+    // udp.broadcastTo("Anyone here?", x);
 
-    // sendMessage("Hi Philipp, can you read this?", 43, 81, 333);
-    // udp.writeTo((const uint8_t*)"Hi Philipp, can you read this?", 31, IPAddress(192,168,43,81), 54321); // Message, char count, IP, port
-    // udp.writeTo((const uint8_t*)"Hi Hans, can you read this?", 27, IPAddress(192,168,43,249), 54321);
-
+    sendMessage("Hi Philipp, can you read this?");
+    
     
     // Wait some time before running the loop again as to not flood the terminal with information.
     delay(1000);
