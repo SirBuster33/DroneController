@@ -53,6 +53,9 @@ String commandRC = "";
 // Used for whether the drone has taken off or not.
 boolean droneIsActive = false;
 
+// Used in the beginning to activate the drone to receive commands.
+boolean commandSent = false;
+
 // sendMessage method using the last two digits of the IP and a port to send a message.
 // Remember to change the UDP Port in your Packet Sender application to receive the messages
 void sendMessage(String msg){
@@ -210,25 +213,32 @@ void setup(){
 // Loop must be at the bottom for the code to compile without errors.
 void loop(){
 
+    // Activates the drone so it can receive commands.
+    if (!commandSent){
+        sendMessage("command");
+        commandSent = true;
+    }
+
     // Always updateState for all objects at the start of the loop!
     joystick1.updateState();
     joystick2.updateState();
     potentiometer.updateState();
     Serial.println(joystick1.printJoystickState());
-    Serial.println(joystick2.printJoystickState());
-    Serial.println(potentiometer.printPotentiometerState());
 
     updateDroneActivity();
-    
+
     if (droneIsActive){
-    speedModifier = adjustSpeed();
+    Serial.println(joystick2.printJoystickState());
+    Serial.println(potentiometer.printPotentiometerState());
+        speedModifier = adjustSpeed();
     
-    commandRC = buildCommandRC();
-    sendMessage(commandRC);
+        commandRC = buildCommandRC();
+        sendMessage(commandRC);
     }
-
-
-
+    else {
+        sendMessage("Drone inactive. Press left joystick to start the drone.");
+        Serial.println("Press the left joystick to start the drone.");
+    }
 
     // Serial.println(" This " + String(60) + " Also this " + String(50));
 
