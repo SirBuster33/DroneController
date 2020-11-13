@@ -130,24 +130,29 @@ void loop(){
     // Always updateState for all objects at the start of the loop!
     joystick1.updateState();
     // joystick2.updateState();
-    // potentiometer.updateState();
+    potentiometer.updateState();
     
-    Serial.println(joystick1.printJoystickState());
-    // Serial.println(joystick2.printJoystickState());    
+    // Serial.println(joystick1.printJoystickState());
+    // Serial.println(joystick2.printJoystickState());
+    
+    // sendMessage("Speed " + String(int(potentiometer.getPotentiometerValue() / 4095 * 10)));
+    Serial.println(potentiometer.getPotentiometerValue());
     // Serial.println(potentiometer.printPotentiometerState());
+
 
     // Serial.println(" This " + String(60) + " Also this " + String(50));
 
-    movePixelX();
-    movePixelY();
+    // movePixelX();
+    // movePixelY();
+
     pixelSpeed();
 
     // Send broadcast on port x
     // udp.broadcastTo("Anyone here?", x);
 
-    sendMessage("Hi Philipp, can you read this?");
+    // sendMessage("Hi Philipp, can you read this?");
     
-    
+
     // Wait some time before running the loop again as to not flood the terminal with information.
     delay(1000);
 }

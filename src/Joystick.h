@@ -45,7 +45,6 @@ class Joystick{
     int getJoystickButtonPin(){
       return this->JoystickButtonPin;
     }
-
     int getJoystickXValue(){
       return this->JoystickXValue;
     }
