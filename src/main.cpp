@@ -47,8 +47,11 @@ Potentiometer potentiometer(potentiometerPin);
 // Used to adjust the strength of movement before sending it as a command.
 int speedModifier = 1;
 
-// Used to build the rc command
+// Used to build the rc command.
 String commandRC = "";
+
+// Used for whether the drone has taken off or not.
+boolean droneIsActive = false;
 
 // sendMessage method using the last two digits of the IP and a port to send a message.
 // Remember to change the UDP Port in your Packet Sender application to receive the messages
@@ -116,7 +119,7 @@ String faceDirection(){
     return faceDirection;
 }
 
-// Sends Tello drone command: "speed x" where x = 1-100
+// Adjusts the speed modifier using the potentiometer, which modifies how strong the drone reacts to movement.
 int adjustSpeed(){
     // If the potentiometer value is not cast to double, the division by 4095 will return 0.
     double potentiometerValueDouble = (double) potentiometer.getPotentiometerValue();
@@ -135,6 +138,18 @@ String buildCommandRC(){
 
     return commandRC;
 }
+
+boolean updateDroneActivity(){
+    if (joystick1.checkButtonState()){
+        droneIsActive = !droneIsActive;   
+    }
+    
+    return droneIsActive;
+}
+
+
+
+
 
 void setup(){    
 
@@ -195,10 +210,15 @@ void loop(){
     Serial.println(joystick2.printJoystickState());
     Serial.println(potentiometer.printPotentiometerState());
 
+    
+    if (droneIsActive){
     speedModifier = adjustSpeed();
     
     commandRC = buildCommandRC();
     sendMessage(commandRC);
+    }
+
+
 
 
     // Serial.println(" This " + String(60) + " Also this " + String(50));

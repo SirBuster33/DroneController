@@ -99,6 +99,15 @@ class Joystick{
   
     }
 
+    boolean checkButtonState(){
+      if (this->JoystickButton == 0){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+
     // Returns the current state of the joystick as a String.
     String printJoystickState(){
       String s;
@@ -113,7 +122,7 @@ class Joystick{
       s += this->JoystickButton;
 
       // Remainder of the joystick exercise but nice to have for quick checking without thinking.
-      if (this->JoystickButton == 0){
+      if (checkButtonState()){
         s += "\nBANG! You hit the button of ";
         s += this->JoystickName;
         s += "!\n";
