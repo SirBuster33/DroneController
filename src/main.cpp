@@ -139,16 +139,24 @@ String buildCommandRC(){
     return commandRC;
 }
 
-boolean updateDroneActivity(){
-    if (joystick1.checkButtonState()){
-        droneIsActive = !droneIsActive;   
+// Sends the land / take off commands based on whether the drone is set to active or not.
+void landTakeOff(){
+    if (droneIsActive){
+        sendMessage("takeoff");
     }
-    
-    return droneIsActive;
+    else if (!droneIsActive){
+        sendMessage("land");
+    }
 }
 
-
-
+// Changes the activity of the drone if the button of joystick1 is pressed.
+boolean updateDroneActivity(){
+    if (joystick1.checkButtonState()){
+        droneIsActive = !droneIsActive;
+        landTakeOff();
+    }
+    return droneIsActive;
+}
 
 
 void setup(){    
@@ -210,6 +218,7 @@ void loop(){
     Serial.println(joystick2.printJoystickState());
     Serial.println(potentiometer.printPotentiometerState());
 
+    updateDroneActivity();
     
     if (droneIsActive){
     speedModifier = adjustSpeed();
