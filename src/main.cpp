@@ -9,12 +9,12 @@
 #include <Potentiometer.h>          // Import Potentiometer class
 
 // Create a hotspot on your phone and connect to it via your ESP32. Remember to connect with your computer too!
-const char * ssid = "A Monkey's Phone"; // Name of the network.     Tello Drone: "TELLO-59F752"
-const char * password = "Lucked6334";   // Password of the network. Tello Drone: ""
+const char * ssid = "A Monkey's Phone"; // Name of the network.     Tello Drone: "TELLO-59F752" Philipp: "A Monkey's Phone"
+const char * password = "Lucked6334";   // Password of the network. Tello Drone: ""             Philipp: "Lucked6334"      
 
 // Change the IPs when you run the code on your computer!
-const int thirdIP = 0;
-const int fourthIP = 19; 
+const int thirdIP = 43;
+const int fourthIP = 81; 
 const int port = 6000; // Depending on what the receiver in the GUI is set to!
 // Drone emulator: (Port) 6000
 // Tello Drone: - To send UdpPackages:      (IP) 192.168.10.1   (Port) 8889
