@@ -1,37 +1,41 @@
 #include <Arduino.h>
 #include "WiFi.h"
 #include "AsyncUDP.h"
-// #include <tuple>  // Allows to easily return multiple values
-                  // Source: https://stackoverflow.com/questions/321068/returning-multiple-values-from-a-c-function
-                  // Was needed earlier but with generalisation (through getters) of the code it's no longer necessary.
+// #include <tuple> // Allows to easily return multiple values
+                    // Source: https://stackoverflow.com/questions/321068/returning-multiple-values-from-a-c-function
+                    // Was needed earlier but with generalisation (through getters) of the code it's no longer necessary.
 
-#include <Joystick.h> // Import Joystick class
-#include <Potentiometer.h> // Import Potentiometer class
+#include <Joystick.h>               // Import Joystick class
+#include <Potentiometer.h>          // Import Potentiometer class
 
 // Create a hotspot on your phone and connect to it via your ESP32. Remember to connect with your computer too!
-const char * ssid = "A Monkey's Phone"; // Name of the network
-const char * password = "Lucked6334";   // Password of the network
+const char * ssid = "A Monkey's Phone"; // Name of the network.     Tello Drone: "TELLO-59F752"
+const char * password = "Lucked6334";         // Password of the network. Tello Drone: ""
 
 // Change the IPs when you run the code on your computer!
 const int thirdIP = 43;
-const int fourthIP = 81;
+const int fourthIP = 81; 
 const int port = 6000; // Depending on what the receiver in the GUI is set to!
+// Drone emulator: (Port) 6000
+// Tello Drone: - To send UdpPackages:      (IP) 192.168.10.1   (Port) 8889
+//              - To receive drone state:   (IP) 0.0.0.0        (Port) 8890
+//              - To receive video stream:  (IP) 0.0.0.0        (Port) 11111
 
 AsyncUDP udp;
 
 // Note for what pins to use: The ADC2 analog pins do not work as intended due to the wifi configuration.
 // Use Pin 32-36 and 39 instead for reading analog input.
 
-const int Joystick1XPin = 33; // Analog Pin.
-const int Joystick1YPin = 32; // Analog Pin.
-const int Joystick1ButtonPin = 21;  // Digital Pin.
-const int Joystick2XPin = 35; // Analog Pin.
-const int Joystick2YPin = 34; // Analog Pin.
-const int Joystick2ButtonPin = 19;  // Digital Pin.
+const int Joystick1XPin = 33;       // Analog Pin.
+const int Joystick1YPin = 32;       // Analog Pin.
+const int Joystick1ButtonPin = 21;      // Digital Pin.
+const int Joystick2XPin = 35;       // Analog Pin.
+const int Joystick2YPin = 34;       // Analog Pin.
+const int Joystick2ButtonPin = 19;      // Digital Pin.
 
-const int potentiometerPin = 36; // Analog Pin.
+const int potentiometerPin = 36;    // Analog Pin.
 
-const int voltageMax = 3.3; // Maximum voltage on the breadboard.
+const int voltageMax = 3.3;         // Maximum voltage on the breadboard.
 
 // Pixels needed for PixelEmulator
 int pixelX = 10;
@@ -127,7 +131,7 @@ int adjustSpeed(){
     // If the potentiometer value is not cast to double, the division by 4095 will return 0.
     double potentiometerValueDouble = (double) potentiometer.getPotentiometerValue();
     int speedModifier = potentiometerValueDouble / 4095 * 100;
-    Serial.println(speedModifier);
+    Serial.println("Speedmodifier is set to: " + speedModifier);
     return speedModifier;
 }
 
@@ -213,7 +217,7 @@ void setup(){
 // Loop must be at the bottom for the code to compile without errors.
 void loop(){
 
-    // Activates the drone so it can receive commands.
+    // Sends the first command "command" which activates the drone to receive other commands.
     if (!commandSent){
         sendMessage("command");
         commandSent = true;
@@ -225,8 +229,10 @@ void loop(){
     potentiometer.updateState();
     Serial.println(joystick1.printJoystickState());
 
+    // Tell the drone to either take off or land on joystick1 button press.
     updateDroneActivity();
 
+    // If the drone is in the air, send movement commands.
     if (droneIsActive){
     Serial.println(joystick2.printJoystickState());
     Serial.println(potentiometer.printPotentiometerState());
@@ -236,15 +242,9 @@ void loop(){
         sendMessage(commandRC);
     }
     else {
-        sendMessage("Drone inactive. Press left joystick to start the drone.");
-        Serial.println("Press the left joystick to start the drone.");
+        // sendMessage("Drone inactive. Press left joystick to start the drone.");
+        Serial.println("Press the left joystick to start the drone.\n");
     }
-
-    // Serial.println(" This " + String(60) + " Also this " + String(50));
-
-
-    // Send broadcast on port x
-    // udp.broadcastTo("Anyone here?", x);
 
     // sendMessage("Hi Philipp, can you read this?");
     
