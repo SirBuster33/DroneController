@@ -57,6 +57,9 @@ String commandRC = "";
 // Used for whether the drone has taken off or not.
 boolean droneIsActive = false;
 
+// Used to make a flip on joystick2 buttonpress.
+boolean needsFlippin = false;
+
 // Used in the beginning to activate the drone to receive commands.
 boolean commandSent = false;
 
@@ -157,12 +160,17 @@ void landTakeOff(){
 }
 
 // Changes the activity of the drone if the button of joystick1 is pressed.
-boolean updateDroneActivity(){
+void updateDroneActivity(){
     if (joystick1.checkButtonState()){
         droneIsActive = !droneIsActive;
         landTakeOff();
     }
-    return droneIsActive;
+    if (joystick2.checkButtonState()){
+        needsFlippin = true;
+    }
+    else{
+        needsFlippin = false;
+    }
 }
 
 
@@ -217,37 +225,49 @@ void setup(){
 // Loop must be at the bottom for the code to compile without errors.
 void loop(){
 
-    // Sends the first command "command" which activates the drone to receive other commands.
-    if (!commandSent){
-        sendMessage("command");
-        commandSent = true;
-    }
-
     // Always updateState for all objects at the start of the loop!
     joystick1.updateState();
     joystick2.updateState();
     potentiometer.updateState();
-    Serial.println(joystick1.printJoystickState());
 
-    // Tell the drone to either take off or land on joystick1 button press.
-    updateDroneActivity();
-
-    // If the drone is in the air, send movement commands.
-    if (droneIsActive){
-    Serial.println(joystick2.printJoystickState());
-    Serial.println(potentiometer.printPotentiometerState());
-        speedModifier = adjustSpeed();
-    
-        commandRC = buildCommandRC();
-        sendMessage(commandRC);
+    // Sends the first command "command" which activates the drone to receive other commands.
+    // The if/else statements make sure that only one command is sent per update to avoid errors or overriding of commands.
+    if (!commandSent){
+        sendMessage("command");
+        commandSent = true;
     }
-    else {
-        // sendMessage("Drone inactive. Press left joystick to start the drone.");
-        Serial.println("Press the left joystick to start the drone.\n");
+    else{
+
+        // Print the state for information on what state the controller is in.
+        Serial.println(joystick1.printJoystickState());
+        // Tell the drone to either take off or land on joystick1 button press.
+        updateDroneActivity();
+
+        // If the drone is in the air, send movement commands.
+        if (droneIsActive){
+            
+            // Print the state for information on what state the controller is in.
+            Serial.println(joystick2.printJoystickState());
+            Serial.println(potentiometer.printPotentiometerState());
+
+            if (needsFlippin) {
+                // Make a backward (b) flip. For other flips, choose left (l), right (r) or forward (f).
+                sendMessage("flip b");
+            }
+            else {
+                speedModifier = adjustSpeed();
+                commandRC = buildCommandRC();
+                sendMessage(commandRC);
+            }
+        }
+        else {
+            // sendMessage("Drone inactive. Press left joystick to start the drone.");
+            Serial.println("Press the left joystick to start the drone.\n");
+        }
+
     }
 
     // sendMessage("Hi Philipp, can you read this?");
-    
 
     // Wait some time before running the loop again as to not flood the terminal with information.
     delay(3000);
