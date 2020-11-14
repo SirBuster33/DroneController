@@ -139,8 +139,13 @@ void adjustSpeed(){
     double potentiometerValueDouble = (double) potentiometer.getPotentiometerValue();
     Serial.println(potentiometerValueDouble);
     Serial.println(speedModifier);
-    int speedModifier = (int) (potentiometerValueDouble / 4095.0 * 100.0);
-    Serial.println("Speedmodifier is set to: " + speedModifier);
+    speedModifier = (int) (potentiometerValueDouble / 4095.0 * 100.0);
+    String s = "";
+    s += "Speedmodifier is set to :";
+    s += speedModifier;
+    Serial.println(s);
+    // Serial.println("Speedmodifier is set to: " + speedModifier);
+    // --> Causes trouble because int needs to be converted to a string number first.
 }
 
 // Builds the rc command for the (Tello) drone.
