@@ -14,7 +14,7 @@ const char * password = "Lucked6334";   // Password of the network. Tello Drone:
 
 // Change the IPs when you run the code on your computer!
 const int thirdIP = 43;
-const int fourthIP = 81; 
+const int fourthIP = 178; 
 const int port = 6000; // Depending on what the receiver in the GUI is set to!
 // Drone emulator: (Port) 6000
 // Tello Drone: - To send UdpPackages:      (IP) 192.168.10.1   (Port) 8889
