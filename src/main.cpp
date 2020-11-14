@@ -10,7 +10,7 @@
 
 // Create a hotspot on your phone and connect to it via your ESP32. Remember to connect with your computer too!
 const char * ssid = "A Monkey's Phone"; // Name of the network.     Tello Drone: "TELLO-59F752"
-const char * password = "Lucked6334";         // Password of the network. Tello Drone: ""
+const char * password = "Lucked6334";   // Password of the network. Tello Drone: ""
 
 // Change the IPs when you run the code on your computer!
 const int thirdIP = 43;
@@ -55,18 +55,22 @@ int speedModifier = 1;
 String commandRC = "";
 
 // Used for whether the drone has taken off or not.
-boolean droneIsActive = false;
+boolean droneIsHovering = false;
 
 // Used to make a flip on joystick2 buttonpress.
 boolean needsFlippin = false;
 
 // Used in the beginning to activate the drone to receive commands.
+boolean droneIsActive = false;
+
+// Used to check whether a command was already sent during the loop.
 boolean commandSent = false;
 
 // sendMessage method using the last two digits of the IP and a port to send a message.
 // Remember to change the UDP Port in your Packet Sender application to receive the messages
 void sendMessage(String msg){
     udp.writeTo((const uint8_t *)msg.c_str(), msg.length(), IPAddress(192, 168, thirdIP, fourthIP), port);
+    commandSent = true;
 }
 
 // Send Tello drone rc command: a (left/right) where (-100 <= a <= 100)
@@ -130,12 +134,11 @@ String faceDirection(){
 }
 
 // Adjusts the speed modifier using the potentiometer, which modifies how strong the drone reacts to movement.
-int adjustSpeed(){
+void adjustSpeed(){
     // If the potentiometer value is not cast to double, the division by 4095 will return 0.
     double potentiometerValueDouble = (double) potentiometer.getPotentiometerValue();
-    int speedModifier = potentiometerValueDouble / 4095 * 100;
+    int speedModifier = (int) (potentiometerValueDouble / 4095.0 * 100.0);
     Serial.println("Speedmodifier is set to: " + speedModifier);
-    return speedModifier;
 }
 
 // Builds the rc command for the (Tello) drone.
@@ -151,10 +154,10 @@ String buildCommandRC(){
 
 // Sends the land / take off commands based on whether the drone is set to active or not.
 void landTakeOff(){
-    if (droneIsActive){
+    if (droneIsHovering){
         sendMessage("takeoff");
     }
-    else if (!droneIsActive){
+    else if (!droneIsHovering){
         sendMessage("land");
     }
 }
@@ -162,7 +165,7 @@ void landTakeOff(){
 // Changes the activity of the drone if the button of joystick1 is pressed.
 void updateDroneActivity(){
     if (joystick1.checkButtonState()){
-        droneIsActive = !droneIsActive;
+        droneIsHovering = !droneIsHovering;
         landTakeOff();
     }
     if (joystick2.checkButtonState()){
@@ -230,38 +233,49 @@ void loop(){
     joystick2.updateState();
     potentiometer.updateState();
 
+    // Reset the boolean meaning that no command was sent to the drone yet.
+    // If any command is sent, this will turn true and no other command will be sent.
+    commandSent = false;
+
     // Sends the first command "command" which activates the drone to receive other commands.
     // The if/else statements make sure that only one command is sent per update to avoid errors or overriding of commands.
-    if (!commandSent){
+    if (!droneIsActive && !commandSent){
         sendMessage("command");
-        commandSent = true;
+        Serial.println("Activating drone...");
+        droneIsActive = true;
     }
-    else{
 
+    if (!commandSent){
+        
         // Print the state for information on what state the controller is in.
         Serial.println(joystick1.printJoystickState());
+
         // Tell the drone to either take off or land on joystick1 button press.
         updateDroneActivity();
 
         // If the drone is in the air, send movement commands.
-        if (droneIsActive){
+        if (droneIsHovering && !commandSent){
             
             // Print the state for information on what state the controller is in.
             Serial.println(joystick2.printJoystickState());
             Serial.println(potentiometer.printPotentiometerState());
 
-            if (needsFlippin) {
+            Serial.println("Test1");
+
+            if (needsFlippin && !commandSent) {
                 // Make a backward (b) flip. For other flips, choose left (l), right (r) or forward (f).
                 sendMessage("flip b");
             }
-            else {
-                speedModifier = adjustSpeed();
+            else if (!commandSent) {
+                Serial.println("Test3");
+                adjustSpeed();
+                Serial.println("Test2");
                 commandRC = buildCommandRC();
                 sendMessage(commandRC);
             }
         }
-        else {
-            // sendMessage("Drone inactive. Press left joystick to start the drone.");
+        else if (!commandSent) {
+            sendMessage("Drone inactive. Press left joystick to start the drone.");
             Serial.println("Press the left joystick to start the drone.\n");
         }
 
