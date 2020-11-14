@@ -137,11 +137,11 @@ String faceDirection(){
 void adjustSpeed(){
     // If the potentiometer value is not cast to double, the division by 4095 will return 0.
     double potentiometerValueDouble = (double) potentiometer.getPotentiometerValue();
-    Serial.println(potentiometerValueDouble);
-    Serial.println(speedModifier);
+    // Serial.println(potentiometerValueDouble);
+    // Serial.println(speedModifier);
     speedModifier = (int) (potentiometerValueDouble / 4095.0 * 100.0);
     String s = "";
-    s += "Speedmodifier is set to :";
+    s += "Speedmodifier is set to: ";
     s += speedModifier;
     Serial.println(s);
     // Serial.println("Speedmodifier is set to: " + speedModifier);
