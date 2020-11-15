@@ -183,6 +183,14 @@ void updateDroneActivity(){
     }
 }
 
+void activateDrone(){
+    if (joystick2.checkButtonState()){
+        sendMessage("command");
+        Serial.println("Activating drone...");
+        droneIsActive = true;
+        
+    }
+}
 
 void setup(){    
 
@@ -248,13 +256,11 @@ void loop(){
 
     // Sends the first command "command" which activates the drone to receive other commands.
     // The if/else statements make sure that only one command is sent per update to avoid errors or overriding of commands.
-    if (!droneIsActive && !commandSent){
-        sendMessage("command");
-        Serial.println("Activating drone...");
-        droneIsActive = true;
+    if (!droneIsActive){
+        activateDrone();
     }
 
-    if (!commandSent){
+    if (droneIsActive && !commandSent){
         
         // Print the state for information on what state the controller is in.
         Serial.println(joystick1.printJoystickState());
