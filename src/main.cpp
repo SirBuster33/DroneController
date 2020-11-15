@@ -267,23 +267,19 @@ void loop(){
             Serial.println(joystick2.printJoystickState());
             Serial.println(potentiometer.printPotentiometerState());
 
-            Serial.println("Test1");
-
             if (needsFlippin && !commandSent) {
                 // Make a backward (b) flip. For other flips, choose left (l), right (r) or forward (f).
                 sendMessage("flip b");
             }
             else if (!commandSent) {
-                Serial.println("Test3");
                 adjustSpeed();
-                Serial.println("Test2");
                 commandRC = buildCommandRC();
                 sendMessage(commandRC);
             }
         }
         else if (!commandSent) {
-            sendMessage("Drone inactive. Press left joystick to start the drone.");
-            Serial.println("Press the left joystick to start the drone.\n");
+            sendMessage("Drone inactive. Hold the left joystick button pressed to start the drone.");
+            Serial.println("Hold the left joystick button pressed to start the drone.\n");
         }
 
     }
