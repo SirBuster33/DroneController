@@ -16,8 +16,8 @@ const char * password = "Lucked6334";   // Password of the network. Tello Drone:
 const int thirdIP = 43;
 const int fourthIP = 81; 
 const int port = 6000; // Depending on what the receiver in the GUI is set to!
-// Drone emulator: (Port) 6000
-// Tello Drone: - To send UdpPackages:      (IP) 192.168.10.1   (Port) 8889
+// Emulator: (Port) 6000
+// Tello Drone: - To send UdpPackages:      (IP) 192.168.10.1   (Port) 8889     Philipp (IP): 192.168.43.81
 //              - To receive drone state:   (IP) 0.0.0.0        (Port) 8890
 //              - To receive video stream:  (IP) 0.0.0.0        (Port) 11111
 
@@ -191,6 +191,8 @@ void setup(){
     // Wifi setup
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
+    Serial.println(ssid);
+    Serial.println(password);
     if (WiFi.waitForConnectResult() != WL_CONNECTED) {
         Serial.println("WiFi Failed");
         while(1) {
@@ -218,7 +220,7 @@ void setup(){
             Serial.println();
             
             //reply to the client/sender
-            packet.printf("Got %u bytes of data", packet.length());
+            //packet.printf("Got %u bytes of data", packet.length());
         
         });
     }
@@ -266,6 +268,7 @@ void loop(){
             // Print the state for information on what state the controller is in.
             Serial.println(joystick2.printJoystickState());
             Serial.println(potentiometer.printPotentiometerState());
+
 
             if (needsFlippin && !commandSent) {
                 // Make a backward (b) flip. For other flips, choose left (l), right (r) or forward (f).
