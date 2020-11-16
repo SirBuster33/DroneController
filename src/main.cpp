@@ -138,6 +138,9 @@ void adjustSpeed(){
     String speed = "speed ";
     speed += potentiometer.getMappedPotentiometerValue();
     sendMessage(speed);
+    String s = "Adjusting speed: ";
+    s += speed;
+    Serial.println(s);
 }
 
 // Builds the command for the (Tello) drone.
@@ -256,6 +259,7 @@ void loop(){
     // Sends the first command "command" which activates the drone to receive other commands.
     // The if/else statements make sure that only one command is sent per update to avoid errors or overriding of commands.
     if (!droneIsActive){
+        Serial.println("Drone inactive. Hold the right joystick button pressed to activate the drone.\n");
         activateDrone();
     }
 
@@ -289,11 +293,6 @@ void loop(){
         }
         if (droneIsHovering && !commandSent){
             adjustSpeed();
-            String s = "Adjusting speed: ";
-            s += speed;
-            Serial.println(s);
-            Serial.print("Adjusting speed: ");
-            Serial.println(speed);
         }
 
     }
