@@ -6,6 +6,7 @@ class Potentiometer{
   private:
     int potentiometerPin;
     int potentiometerValue;
+    int mappedPotentiometerValue; // Used solely for adjustSpeed() method in main.
     double voltage;
     const int voltageMax = 3.3; // Maximum voltage on the breadboard.
 
@@ -16,6 +17,7 @@ class Potentiometer{
       this->potentiometerPin = potentiometerPin;
       pinMode (potentiometerPin, INPUT);
       this->potentiometerValue = 0;
+      this->mappedPotentiometerValue;
       this->voltage = 0;
     }
 
@@ -25,6 +27,9 @@ class Potentiometer{
     }
     int getPotentiometerValue(){
       return this->potentiometerValue;
+    }
+    int getMappedPotentiometerValue(){
+      return this->mappedPotentiometerValue;
     }
 
     int getVoltage(){
@@ -38,6 +43,7 @@ class Potentiometer{
     // Reads the input on the breadboard.
     void updateState(){
       this->potentiometerValue = analogRead(this->potentiometerPin);
+      this->mappedPotentiometerValue = map(analogRead(this->potentiometerPin), 0, 4095, 10, 100);
       this->voltage = potentiometerValue / 4095.0 * 3.3;
     }
 

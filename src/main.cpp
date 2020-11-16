@@ -149,7 +149,7 @@ void adjustSpeed(){
 }
 
 // Builds the command for the (Tello) drone.
-String buildCommand(){
+void buildCommand(){
     leftRight();
     forwardBackward();
     upDown();
@@ -281,7 +281,7 @@ void loop(){
                 sendMessage("flip b");
             }
             else if (!commandSent) {
-                adjustSpeed();
+                // adjustSpeed(); --> Taken out of this branch as sending the command would be difficult.
                 // Send basic movement commands based on the joystick movements. Only one input will be read and sent at a time.
                 buildCommand();
             }
