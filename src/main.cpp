@@ -106,10 +106,10 @@ String forwardBackward(){
 // Send Tello drone rc command: c (up/down) = where (-100 <= c <= 100)
 String upDown(){
     String upDown = "";
-    if (joystick2.getJoystickYValue() == 100){
+    if (joystick2.getJoystickXValue() == 100){
         upDown += 1 * speedModifier;
     }
-    else if (joystick2.getJoystickYValue() == -100){
+    else if (joystick2.getJoystickXValue() == -100){
         upDown += (-1) * speedModifier;
     } else {
         upDown += 0;
@@ -121,10 +121,10 @@ String upDown(){
 // Send Tello drone rc command: d (faceDirection) = where (-100 <= d <= 100)
 String faceDirection(){
     String faceDirection = "";
-    if (joystick2.getJoystickXValue() == 100){
+    if (joystick2.getJoystickYValue() == 100){
         faceDirection += 1 * speedModifier;
     }
-    else if (joystick2.getJoystickXValue() == -100){
+    else if (joystick2.getJoystickYValue() == -100){
         faceDirection += (-1) * speedModifier;
     } else {
         faceDirection += 0;
@@ -257,6 +257,7 @@ void loop(){
     // Sends the first command "command" which activates the drone to receive other commands.
     // The if/else statements make sure that only one command is sent per update to avoid errors or overriding of commands.
     if (!droneIsActive){
+        Serial.println("Drone inactive. Hold the right joystick button pressed to activate the drone.\n");
         activateDrone();
     }
 
@@ -286,14 +287,21 @@ void loop(){
                 sendMessage(commandRC);
             }
         }
-        else if (!commandSent) {
-            sendMessage("Drone inactive. Hold the left joystick button pressed to start the drone.");
-            Serial.println("Hold the left joystick button pressed to start the drone.\n");
+        else if (!droneIsHovering && !commandSent) {
+            sendMessage("Drone not hovering. Hold the left joystick button pressed take off.");
+            Serial.println("Hold the left joystick button pressed to take off.\n");
+        }
+        if (droneIsHovering && !commandSent){
+            Serial.println("Press left joystick button: land.");
+            Serial.println("Press right joystick button: Make a backward flip.");
+            Serial.println("Move the potentiometer: adjust the speed.");
+            Serial.println("Move the left joystick vertically: Move forward / backward.");
+            Serial.println("Move the left joystick horizontally: Move left / right.");
+            Serial.println("Move the right joystick vertically: Move up / down.");
+            Serial.println("Move the left joystick horizontally: Rotate the drone.");
         }
 
     }
-
-    // sendMessage("Hi Philipp, can you read this?");
 
     // Wait some time before running the loop again as to not flood the terminal with information.
     delay(3000);

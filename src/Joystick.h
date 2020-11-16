@@ -26,10 +26,6 @@ class Joystick{
       pinMode (this->JoystickYPin, INPUT);
       this->JoystickButtonPin = JoystickButtonPin;
       pinMode (this->JoystickButtonPin, INPUT_PULLUP);
-      int JoystickXValue = 0;
-      int JoystickYValue = 0;
-      int JoystickButton = 0;
-
     }
 
     // Getters
