@@ -282,6 +282,7 @@ void loop(){
             }
             else if (!commandSent) {
                 adjustSpeed();
+                // Changing RC command
                 commandRC = buildCommandRC();
                 sendMessage(commandRC);
             }
