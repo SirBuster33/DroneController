@@ -77,12 +77,12 @@ void sendMessage(String msg){
 void leftRight(){
     String leftRight = "";  
     if (joystick1.getJoystickYValue() == 100){
-        leftRight += "left ";
+        leftRight += "right ";
         leftRight += 100;
         sendMessage(leftRight);
     }
     else if (joystick1.getJoystickYValue() == -100){
-        leftRight += "right ";
+        leftRight += "left ";
         leftRight += 100;
         sendMessage(leftRight);
     }
@@ -106,12 +106,12 @@ void forwardBackward(){
 // Send Tello drone "up / down x" command. X is set to 100 as a default but can be: 20 <= X <= 500
 void upDown(){
     String upDown = "";
-    if (joystick2.getJoystickYValue() == 100){
+    if (joystick2.getJoystickXValue() == 100){
         upDown += "up ";
         upDown += 100;
         sendMessage(upDown);
     }
-    else if (joystick2.getJoystickYValue() == -100){
+    else if (joystick2.getJoystickXValue() == -100){
         upDown += "down ";
         upDown += 100;
         sendMessage(upDown);
@@ -121,12 +121,12 @@ void upDown(){
 // Send Tello drone "cw / ccw x" command. X is set to 100 as a default but can be: 20 <= X <= 500
 void faceDirection(){
     String faceDirection = "";
-    if (joystick2.getJoystickXValue() == 100){
+    if (joystick2.getJoystickYValue() == 100){
         faceDirection += "cw ";
         faceDirection += 100;
         sendMessage(faceDirection);
     }
-    else if (joystick2.getJoystickXValue() == -100){
+    else if (joystick2.getJoystickYValue() == -100){
         faceDirection += "ccw ";
         faceDirection += 100;
         sendMessage(faceDirection);
@@ -143,9 +143,15 @@ void adjustSpeed(){
 // Builds the command for the (Tello) drone.
 void buildCommand(){
     leftRight();
-    forwardBackward();
-    upDown();
-    faceDirection();
+    if (!commandSent){
+        forwardBackward();
+    }
+    if (!commandSent){
+        upDown();
+    }
+    if (!commandSent){
+        faceDirection();
+    }
 }
 
 // Sends the land / take off commands based on whether the drone is set to active or not.
