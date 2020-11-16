@@ -287,9 +287,11 @@ void loop(){
             sendMessage("Drone not hovering. Hold the left joystick button pressed to take off.");
             Serial.println("Hold the left joystick button pressed to take off.\n");
         }
-        else if (!commandSent){
+        if (droneIsHovering && !commandSent){
             adjustSpeed();
-            Serial.println("Adjusting speed: " + speed);
+            String s = "Adjusting speed: ";
+            s += speed;
+            Serial.println(s);
         }
 
     }
