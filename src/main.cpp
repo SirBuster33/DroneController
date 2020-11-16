@@ -292,6 +292,8 @@ void loop(){
             String s = "Adjusting speed: ";
             s += speed;
             Serial.println(s);
+            Serial.print("Adjusting speed: ");
+            Serial.println(speed);
         }
 
     }
