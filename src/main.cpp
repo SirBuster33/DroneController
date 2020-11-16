@@ -77,13 +77,13 @@ void sendMessage(String msg){
 void leftRight(){
     String leftRight = "";  
     if (joystick1.getJoystickYValue() == 100){
-        leftRight += "right ";
-        leftRight += 100;
+        leftRight += "right";
+        // leftRight += 100;
         sendMessage(leftRight);
     }
     else if (joystick1.getJoystickYValue() == -100){
-        leftRight += "left ";
-        leftRight += 100;
+        leftRight += "left";
+        // leftRight += 100;
         sendMessage(leftRight);
     }
 }
@@ -92,13 +92,13 @@ void leftRight(){
 void forwardBackward(){
     String forwardBackward = "";
     if (joystick1.getJoystickXValue() == 100){
-        forwardBackward += "forward ";
-        forwardBackward += 100;
+        forwardBackward += "forward";
+        // forwardBackward += 100;
         sendMessage(forwardBackward);
     }
     else if (joystick1.getJoystickXValue() == -100){
-        forwardBackward += "back ";
-        forwardBackward += 100;
+        forwardBackward += "back";
+        // forwardBackward += 100;
         sendMessage(forwardBackward);
     }
 }
@@ -107,13 +107,13 @@ void forwardBackward(){
 void upDown(){
     String upDown = "";
     if (joystick2.getJoystickXValue() == 100){
-        upDown += "up ";
-        upDown += 100;
+        upDown += "up";
+        // upDown += 100;
         sendMessage(upDown);
     }
     else if (joystick2.getJoystickXValue() == -100){
-        upDown += "down ";
-        upDown += 100;
+        upDown += "down";
+        // upDown += 100;
         sendMessage(upDown);
     }
 }
@@ -122,13 +122,13 @@ void upDown(){
 void faceDirection(){
     String faceDirection = "";
     if (joystick2.getJoystickYValue() == 100){
-        faceDirection += "cw ";
-        faceDirection += 100;
+        faceDirection += "cw";
+        // faceDirection += 100;
         sendMessage(faceDirection);
     }
     else if (joystick2.getJoystickYValue() == -100){
-        faceDirection += "ccw ";
-        faceDirection += 100;
+        faceDirection += "ccw";
+        // faceDirection += 100;
         sendMessage(faceDirection);
     }
 }
@@ -288,11 +288,11 @@ void loop(){
             }
         }
         else if (!droneIsHovering && !commandSent) {
-            sendMessage("Drone not hovering. Hold the left joystick button pressed to take off.");
+            // sendMessage("Drone not hovering. Hold the left joystick button pressed to take off.");
             Serial.println("Hold the left joystick button pressed to take off.\n");
         }
         if (droneIsHovering && !commandSent){
-            adjustSpeed();
+            // adjustSpeed();
             Serial.println("\nPlease move one component at a time.");
             Serial.println("Press left joystick button: land.");
             Serial.println("Press right joystick button: Make a backward flip.");
