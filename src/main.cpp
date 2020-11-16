@@ -48,8 +48,8 @@ Joystick joystick2("Joystick2", Joystick2XPin, Joystick2YPin, Joystick2ButtonPin
 // Create a potentiometer object
 Potentiometer potentiometer(potentiometerPin);
 
-// Used to adjust the strength of movement before sending it as a command.
-int speedModifier = 1;
+// Used to send the "speed x" command.
+String speed = "";
 
 // Used to build the rc command.
 String commandRC = "";
@@ -73,7 +73,7 @@ void sendMessage(String msg){
     commandSent = true;
 }
 
-// Send Tello drone left / right x command. X is set to 100 as a default but can be: 20 <= X <= 500
+// Send Tello drone "left / right x" command. X is set to 100 as a default but can be: 20 <= X <= 500
 void leftRight(){
     String leftRight = "";  
     if (joystick1.getJoystickYValue() == 100){
@@ -88,7 +88,7 @@ void leftRight(){
     }
 }
 
-// Send Tello drone forward / backward x command. X is set to 100 as a default but can be: 20 <= X <= 500
+// Send Tello drone "forward / backward x" command. X is set to 100 as a default but can be: 20 <= X <= 500
 void forwardBackward(){
     String forwardBackward = "";
     if (joystick1.getJoystickXValue() == 100){
@@ -103,7 +103,7 @@ void forwardBackward(){
     }
 }
 
-// Send Tello drone up / down x command. X is set to 100 as a default but can be: 20 <= X <= 500
+// Send Tello drone "up / down x" command. X is set to 100 as a default but can be: 20 <= X <= 500
 void upDown(){
     String upDown = "";
     if (joystick2.getJoystickYValue() == 100){
@@ -118,7 +118,7 @@ void upDown(){
     }
 }
 
-// Send Tello drone cw / ccw x command. X is set to 100 as a default but can be: 20 <= X <= 500
+// Send Tello drone "cw / ccw x" command. X is set to 100 as a default but can be: 20 <= X <= 500
 void faceDirection(){
     String faceDirection = "";
     if (joystick2.getJoystickXValue() == 100){
@@ -133,19 +133,11 @@ void faceDirection(){
     }
 }
 
-// Adjusts the speed modifier using the potentiometer, which modifies how strong the drone reacts to movement.
+// Sends the speed x command, where x is 10 <= x <= 100, based on the potentiometer setting.
 void adjustSpeed(){
-    // If the potentiometer value is not cast to double, the division by 4095 will return 0.
-    double potentiometerValueDouble = (double) potentiometer.getPotentiometerValue();
-    // Serial.println(potentiometerValueDouble);
-    // Serial.println(speedModifier);
-    speedModifier = (int) (potentiometerValueDouble / 4095.0 * 100.0);
-    String s = "";
-    s += "Speedmodifier is set to: ";
-    s += speedModifier;
-    Serial.println(s);
-    // Serial.println("Speedmodifier is set to: " + speedModifier);
-    // --> Causes trouble because int needs to be converted to a string number first.
+    String speed = "speed ";
+    speed += potentiometer.getMappedPotentiometerValue();
+    sendMessage(speed);
 }
 
 // Builds the command for the (Tello) drone.
@@ -281,14 +273,17 @@ void loop(){
                 sendMessage("flip b");
             }
             else if (!commandSent) {
-                // adjustSpeed(); --> Taken out of this branch as sending the command would be difficult.
                 // Send basic movement commands based on the joystick movements. Only one input will be read and sent at a time.
                 buildCommand();
             }
         }
-        else if (!commandSent) {
+        else if (!droneIsHovering && !commandSent) {
             sendMessage("Drone not hovering. Hold the left joystick button pressed to take off.");
             Serial.println("Hold the left joystick button pressed to take off.\n");
+        }
+        else if (!commandSent){
+            adjustSpeed();
+            Serial.println("Adjusting speed: " + speed);
         }
 
     }

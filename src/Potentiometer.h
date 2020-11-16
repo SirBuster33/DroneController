@@ -17,7 +17,7 @@ class Potentiometer{
       this->potentiometerPin = potentiometerPin;
       pinMode (potentiometerPin, INPUT);
       this->potentiometerValue = 0;
-      this->mappedPotentiometerValue;
+      this->mappedPotentiometerValue = 0;
       this->voltage = 0;
     }
 
