@@ -293,6 +293,14 @@ void loop(){
         }
         if (droneIsHovering && !commandSent){
             adjustSpeed();
+            Serial.println("\nPlease move one component at a time.");
+            Serial.println("Press left joystick button: land.");
+            Serial.println("Press right joystick button: Make a backward flip.");
+            Serial.println("Move the potentiometer: adjust the speed.");
+            Serial.println("Move the left joystick vertically: Move forward / backward.");
+            Serial.println("Move the left joystick horizontally: Move left / right.");
+            Serial.println("Move the right joystick vertically: Move up / down.");
+            Serial.println("Move the left joystick horizontally: Rotate the drone.");
         }
 
     }
