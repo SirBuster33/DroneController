@@ -73,64 +73,64 @@ void sendMessage(String msg){
     commandSent = true;
 }
 
-// Send Tello drone rc command: a (left/right) where (-100 <= a <= 100)
-String leftRight(){
+// Send Tello drone left / right x command. X is set to 100 as a default but can be: 20 <= X <= 500
+void leftRight(){
     String leftRight = "";  
     if (joystick1.getJoystickYValue() == 100){
-        leftRight += (1) * speedModifier;
+        leftRight += "left ";
+        leftRight += 100;
+        sendMessage(leftRight);
     }
     else if (joystick1.getJoystickYValue() == -100){
-        leftRight += (-1) * speedModifier;
-    } else {
-        leftRight += 0;
+        leftRight += "right ";
+        leftRight += 100;
+        sendMessage(leftRight);
     }
-    leftRight += " ";
-    return leftRight;
 }
 
-// Send Tello drone rc command: b (forward/backward) = where (-100 <= b <= 100)
-String forwardBackward(){
+// Send Tello drone forward / backward x command. X is set to 100 as a default but can be: 20 <= X <= 500
+void forwardBackward(){
     String forwardBackward = "";
     if (joystick1.getJoystickXValue() == 100){
-        forwardBackward += 1 * speedModifier;
+        forwardBackward += "forward ";
+        forwardBackward += 100;
+        sendMessage(forwardBackward);
     }
     else if (joystick1.getJoystickXValue() == -100){
-        forwardBackward += (-1) * speedModifier;
-    } else {
-        forwardBackward += 0;
+        forwardBackward += "back ";
+        forwardBackward += 100;
+        sendMessage(forwardBackward);
     }
-    forwardBackward += " ";
-    return forwardBackward;
 }
 
-// Send Tello drone rc command: c (up/down) = where (-100 <= c <= 100)
-String upDown(){
+// Send Tello drone up / down x command. X is set to 100 as a default but can be: 20 <= X <= 500
+void upDown(){
     String upDown = "";
     if (joystick2.getJoystickYValue() == 100){
-        upDown += 1 * speedModifier;
+        upDown += "up ";
+        upDown += 100;
+        sendMessage(upDown);
     }
     else if (joystick2.getJoystickYValue() == -100){
-        upDown += (-1) * speedModifier;
-    } else {
-        upDown += 0;
+        upDown += "down ";
+        upDown += 100;
+        sendMessage(upDown);
     }
-    upDown += " ";
-    return upDown;
 }
 
-// Send Tello drone rc command: d (faceDirection) = where (-100 <= d <= 100)
-String faceDirection(){
+// Send Tello drone cw / ccw x command. X is set to 100 as a default but can be: 20 <= X <= 500
+void faceDirection(){
     String faceDirection = "";
     if (joystick2.getJoystickXValue() == 100){
-        faceDirection += 1 * speedModifier;
+        faceDirection += "cw ";
+        faceDirection += 100;
+        sendMessage(faceDirection);
     }
     else if (joystick2.getJoystickXValue() == -100){
-        faceDirection += (-1) * speedModifier;
-    } else {
-        faceDirection += 0;
+        faceDirection += "ccw ";
+        faceDirection += 100;
+        sendMessage(faceDirection);
     }
-    // faceDirection += " ";
-    return faceDirection;
 }
 
 // Adjusts the speed modifier using the potentiometer, which modifies how strong the drone reacts to movement.
@@ -148,15 +148,12 @@ void adjustSpeed(){
     // --> Causes trouble because int needs to be converted to a string number first.
 }
 
-// Builds the rc command for the (Tello) drone.
-String buildCommandRC(){
-    String commandRC = "rc ";
-    commandRC += leftRight();
-    commandRC += forwardBackward();
-    commandRC += upDown();
-    commandRC += faceDirection();
-
-    return commandRC;
+// Builds the command for the (Tello) drone.
+String buildCommand(){
+    leftRight();
+    forwardBackward();
+    upDown();
+    faceDirection();
 }
 
 // Sends the land / take off commands based on whether the drone is set to active or not.
@@ -250,6 +247,10 @@ void loop(){
     joystick2.updateState();
     potentiometer.updateState();
 
+    // Print the state of the right joystick.
+    // Since the drone needs to be activated first, the state of the other components are unnecessary at this point.
+    Serial.println(joystick2.printJoystickState());
+
     // Reset the boolean meaning that no command was sent to the drone yet.
     // If any command is sent, this will turn true and no other command will be sent.
     commandSent = false;
@@ -262,7 +263,7 @@ void loop(){
 
     if (droneIsActive && !commandSent){
         
-        // Print the state for information on what state the controller is in.
+        // Print the state of the left joystick.
         Serial.println(joystick1.printJoystickState());
 
         // Tell the drone to either take off or land on joystick1 button press.
@@ -271,8 +272,7 @@ void loop(){
         // If the drone is in the air, send movement commands.
         if (droneIsHovering && !commandSent){
             
-            // Print the state for information on what state the controller is in.
-            Serial.println(joystick2.printJoystickState());
+            // Print the state of the potentiometer.
             Serial.println(potentiometer.printPotentiometerState());
 
 
@@ -282,19 +282,16 @@ void loop(){
             }
             else if (!commandSent) {
                 adjustSpeed();
-                // Changing RC command
-                commandRC = buildCommandRC();
-                sendMessage(commandRC);
+                // Send basic movement commands based on the joystick movements. Only one input will be read and sent at a time.
+                buildCommand();
             }
         }
         else if (!commandSent) {
-            sendMessage("Drone inactive. Hold the left joystick button pressed to start the drone.");
-            Serial.println("Hold the left joystick button pressed to start the drone.\n");
+            sendMessage("Drone not hovering. Hold the left joystick button pressed to take off.");
+            Serial.println("Hold the left joystick button pressed to take off.\n");
         }
 
     }
-
-    // sendMessage("Hi Philipp, can you read this?");
 
     // Wait some time before running the loop again as to not flood the terminal with information.
     delay(3000);
