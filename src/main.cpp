@@ -9,13 +9,13 @@
 #include <Potentiometer.h>          // Import Potentiometer class
 
 // Create a hotspot on your phone and connect to it via your ESP32. Remember to connect with your computer too!
-const char * ssid = "A Monkey's Phone"; // Name of the network.     Tello Drone: "TELLO-59F752" Philipp: "A Monkey's Phone"
-const char * password = "Lucked6334";   // Password of the network. Tello Drone: ""             Philipp: "Lucked6334"      
+const char * ssid = "TELLO-59F752"; // Name of the network.     Tello Drone: "TELLO-59F752" Philipp: "A Monkey's Phone"
+const char * password = "";   // Password of the network. Tello Drone: ""             Philipp: "Lucked6334"      
 
 // Change the IPs when you run the code on your computer!
-const int thirdIP = 43;
-const int fourthIP = 81; 
-const int port = 6000; // Depending on what the receiver in the GUI is set to!
+const int thirdIP = 10;
+const int fourthIP = 1; 
+const int port = 8889; // Depending on what the receiver in the GUI is set to!
 // Emulator: (Port) 6000
 // Tello Drone: - To send UdpPackages:      (IP) 192.168.10.1   (Port) 8889     Philipp (IP): 192.168.43.81
 //              - To receive drone state:   (IP) 0.0.0.0        (Port) 8890
@@ -288,7 +288,7 @@ void loop(){
             }
         }
         else if (!droneIsHovering && !commandSent) {
-            sendMessage("Drone not hovering. Hold the left joystick button pressed take off.");
+            // sendMessage("Drone not hovering. Hold the left joystick button pressed take off.");
             Serial.println("Hold the left joystick button pressed to take off.\n");
         }
         if (droneIsHovering && !commandSent){
@@ -304,5 +304,5 @@ void loop(){
     }
 
     // Wait some time before running the loop again as to not flood the terminal with information.
-    delay(3000);
+    delay(500);
 }
