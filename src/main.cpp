@@ -1,9 +1,6 @@
 #include <Arduino.h>
 #include "WiFi.h"
 #include "AsyncUDP.h"
-// #include <tuple> // Allows to easily return multiple values
-                    // Source: https://stackoverflow.com/questions/321068/returning-multiple-values-from-a-c-function
-                    // Was needed earlier but with generalisation (through getters) of the code it's no longer necessary.
 
 #include <Joystick.h>               // Import Joystick class
 #include <Potentiometer.h>          // Import Potentiometer class
