@@ -185,7 +185,7 @@ void activateDrone(){
         sendMessage("command");
         Serial.println("Activating drone...");
         droneIsActive = true;
-        
+        delay(1000);        
     }
 }
 
