@@ -94,7 +94,7 @@ void forwardBackward(){
         sendMessage(forwardBackward);
     }
     else if (joystick1.getJoystickXValue() == -100){
-        forwardBackward += "back";
+        forwardBackward += "backward";
         // forwardBackward += 100;
         sendMessage(forwardBackward);
     }
@@ -303,5 +303,5 @@ void loop(){
     }
 
     // Wait some time before running the loop again as to not flood the terminal with information.
-    delay(3000);
+    delay(500);
 }
