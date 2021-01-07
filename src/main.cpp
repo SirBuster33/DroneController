@@ -158,9 +158,11 @@ void buildCommand(){
 void landTakeOff(){
     if (droneIsHovering){
         sendMessage("takeoff");
+        delay(500);
     }
     else if (!droneIsHovering){
         sendMessage("land");
+        delay(500);
     }
 }
 
