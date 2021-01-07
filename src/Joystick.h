@@ -132,10 +132,6 @@ class Joystick{
       return s;
     }
 
-    void movePixel(){
-      ;
-    }
-
     // Prints extra space so that the output is readible. May be implemented somewhere else.
     void printSpace(){
       Serial.println("");
