@@ -190,7 +190,7 @@ void activateDrone(){
         sendMessage("command");
         Serial.println("Activating drone...");
         droneIsActive = true;
-        
+        delay(1000);        
     }
 }
 
@@ -306,5 +306,5 @@ void loop(){
     }
 
     // Wait some time before running the loop again as to not flood the terminal with information.
-    delay(500);
+    delay(100);
 }
